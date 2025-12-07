@@ -35,8 +35,8 @@ public class LargeMixerMachine extends WorkableElectricMultiblockMachine impleme
     @RequireRerender
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
-    public LargeMixerMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public LargeMixerMachine(IMachineBlockEntity holder) {
+        super(holder);
     }
 
     @Override

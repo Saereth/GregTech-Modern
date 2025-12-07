@@ -42,8 +42,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     @Persisted
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.OUT, args);
+    public MEOutputBusPartMachine(IMachineBlockEntity holder) {
+        super(holder, IO.OUT);
     }
 
     /////////////////////////////////
@@ -51,7 +51,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     /////////////////////////////////
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteHandler(this);
     }

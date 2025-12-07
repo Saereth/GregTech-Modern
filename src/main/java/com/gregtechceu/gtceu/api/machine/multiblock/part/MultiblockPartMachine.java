@@ -27,11 +27,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -77,7 +73,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     public void onControllersUpdated(Set<BlockPos> newPositions, Set<BlockPos> old) {
         controllers.clear();
         for (BlockPos blockPos : newPositions) {
-            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
+            if (MetaMachine.getMachine(Objects.requireNonNull(getLevel()), blockPos) instanceof IMultiController controller) {
                 controllers.add(controller);
             }
         }

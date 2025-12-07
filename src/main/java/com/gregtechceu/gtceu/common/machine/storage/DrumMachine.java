@@ -78,11 +78,11 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Getter
     protected final Material material;
 
-    public DrumMachine(IMachineBlockEntity holder, Material material, int maxStoredFluids, Object... args) {
+    public DrumMachine(IMachineBlockEntity holder, Material material, int maxStoredFluids) {
         super(holder);
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;
-        this.cache = createCacheFluidHandler(args);
+        this.cache = createCacheFluidHandler();
     }
 
     //////////////////////////////////////
@@ -93,7 +93,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
+    protected NotifiableFluidTank createCacheFluidHandler() {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH)
                 .setFilter(material.getProperty(PropertyKey.FLUID_PIPE));
     }

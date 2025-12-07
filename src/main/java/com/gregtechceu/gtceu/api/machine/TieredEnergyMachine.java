@@ -59,15 +59,6 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        long tierVoltage = GTValues.V[tier];
-        if (isEnergyEmitter()) {
-            return NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
-        } else return NotifiableEnergyContainer.receiverContainer(this,
-                tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();

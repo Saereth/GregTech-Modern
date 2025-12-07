@@ -84,7 +84,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Persisted
     @DescSynced
     @RequireRerender
-    protected Direction outputFacingItems;
+    protected @Nullable Direction outputFacingItems;
     @Getter
     @Persisted
     @DescSynced
@@ -112,11 +112,11 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Nullable
     protected TickableSubscription autoOutputSubs;
 
-    public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
+    public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount) {
         super(holder, tier);
         this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
-        this.cache = createCacheItemHandler(args);
+        this.cache = createCacheItemHandler();
         this.lockedItem = new CustomItemStackHandler();
     }
 
@@ -129,7 +129,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemCache createCacheItemHandler(Object... args) {
+    protected ItemCache createCacheItemHandler() {
         return new ItemCache(this);
     }
 

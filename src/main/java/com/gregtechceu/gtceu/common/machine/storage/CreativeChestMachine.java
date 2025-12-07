@@ -52,7 +52,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    protected ItemCache createCacheItemHandler(Object... args) {
+    protected ItemCache createCacheItemHandler() {
         return new InfiniteCache(this);
     }
 

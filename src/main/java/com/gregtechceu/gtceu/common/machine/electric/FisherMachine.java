@@ -133,7 +133,7 @@ public class FisherMachine extends TieredEnergyMachine
     @DescSynced
     protected boolean junkEnabled = true;
 
-    public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
+    public FisherMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.maxProgress = calcMaxProgress(tier);

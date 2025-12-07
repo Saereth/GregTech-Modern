@@ -53,7 +53,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
         super(holder, GTValues.MAX, 1);
     }
 
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new InfiniteCache(this);
     }
 

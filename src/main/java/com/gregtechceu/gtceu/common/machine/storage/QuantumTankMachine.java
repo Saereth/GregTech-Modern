@@ -75,7 +75,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Persisted
     @DescSynced
     @RequireRerender
-    protected Direction outputFacingFluids;
+    protected @Nullable Direction outputFacingFluids;
     @Getter
     @Persisted
     @DescSynced
@@ -104,11 +104,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Nullable
     protected TickableSubscription autoOutputSubs;
 
-    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
+    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount) {
         super(holder, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
-        this.cache = createCacheFluidHandler(args);
+        this.cache = createCacheFluidHandler();
         this.lockedFluid = new CustomFluidTank(1000);
     }
 
@@ -121,7 +121,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new FluidCache(this);
     }
 

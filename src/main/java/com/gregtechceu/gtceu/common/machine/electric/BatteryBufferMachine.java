@@ -58,6 +58,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize) {
         super(holder, tier, new TieredEnergyMachineTraits() {
+
             @Override
             public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
                 return new EnergyBatteryTrait((BatteryBufferMachine) machine, inventorySize);
@@ -215,6 +216,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
         private BatteryBufferMachine machine;
         private final int tier;
+
         protected EnergyBatteryTrait(BatteryBufferMachine machine, int inventorySize) {
             super(machine, GTValues.V[machine.getTier()] * inventorySize * 32L, GTValues.V[machine.getTier()],
                     inventorySize * AMPS_PER_BATTERY, GTValues.V[machine.getTier()], inventorySize);
@@ -236,7 +238,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         @Override
         public void serverTick() {
             var outFacing = machine.getFrontFacing();
-            var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(), machine.getPos().relative(outFacing),
+            var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
+                    machine.getPos().relative(outFacing),
                     outFacing.getOpposite());
             if (energyContainer == null) {
                 return;

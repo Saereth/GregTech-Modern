@@ -73,7 +73,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     public void onControllersUpdated(Set<BlockPos> newPositions, Set<BlockPos> old) {
         controllers.clear();
         for (BlockPos blockPos : newPositions) {
-            if (MetaMachine.getMachine(Objects.requireNonNull(getLevel()), blockPos) instanceof IMultiController controller) {
+            if (MetaMachine.getMachine(Objects.requireNonNull(getLevel()),
+                    blockPos) instanceof IMultiController controller) {
                 controllers.add(controller);
             }
         }

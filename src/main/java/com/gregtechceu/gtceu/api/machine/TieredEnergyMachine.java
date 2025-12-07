@@ -18,6 +18,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
+import java.util.function.Function;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -30,6 +32,12 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     @DescSynced
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSub;
+
+    public TieredEnergyMachine(IMachineBlockEntity holder, int tier,
+                               Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
+        super(holder, tier);
+        energyContainer = energyContainerSupplier.apply(this);
+    }
 
     public TieredEnergyMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);

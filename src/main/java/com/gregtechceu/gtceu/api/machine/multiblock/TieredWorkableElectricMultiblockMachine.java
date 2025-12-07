@@ -27,8 +27,8 @@ public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMul
     @Getter
     protected int overclockTier;
 
-    public TieredWorkableElectricMultiblockMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, args);
+    public TieredWorkableElectricMultiblockMachine(IMachineBlockEntity holder, int tier) {
+        super(holder);
         this.tier = tier;
     }
 

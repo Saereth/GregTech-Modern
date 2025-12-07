@@ -50,17 +50,11 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
-    public final NotifiableItemStackHandler importItems;
+    public final NotifiableItemStackHandler importItems, exportItems;
     @Persisted
-    public final NotifiableItemStackHandler exportItems;
+    public final NotifiableFluidTank importFluids, exportFluids;
     @Persisted
-    public final NotifiableFluidTank importFluids;
-    @Persisted
-    public final NotifiableFluidTank exportFluids;
-    @Persisted
-    public final NotifiableComputationContainer importComputation;
-    @Persisted
-    public final NotifiableComputationContainer exportComputation;
+    public final NotifiableComputationContainer importComputation, exportComputation;
     @Getter
     protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
@@ -76,19 +70,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public static class WorkableTieredMachineTraits extends TieredEnergyMachineTraits {
-        @Override
-        public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-            long tierVoltage = GTValues.V[machine.getTier()];
-            if (machine.isEnergyEmitter()) {
-                return RecipeAmperageEnergyContainer.makeEmitterContainer((IRecipeLogicMachine) machine, tierVoltage * 64L,
-                        tierVoltage, machine.getMaxInputOutputAmperage());
-            } else {
-                return RecipeAmperageEnergyContainer.makeReceiverContainer((IRecipeLogicMachine)machine, tierVoltage * 64L,
-                        tierVoltage, machine.getMaxInputOutputAmperage());
-            }
-        }
-
+    public static class WorkableTieredMachineTraits {
         public RecipeLogic recipeLogic(WorkableTieredMachine machine) {
             return new RecipeLogic(machine);
         }
@@ -121,7 +103,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, WorkableTieredMachineTraits traits) {
-        super(holder, tier, traits);
+        super(holder, tier);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;

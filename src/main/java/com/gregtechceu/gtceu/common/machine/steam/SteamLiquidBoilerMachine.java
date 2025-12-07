@@ -33,6 +33,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,9 +48,9 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     @Persisted
     public final NotifiableFluidTank fuelTank;
 
-    public SteamLiquidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder, isHighPressure, args);
-        this.fuelTank = createFuelTank(args).setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
+    public SteamLiquidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure) {
+        super(holder, isHighPressure);
+        this.fuelTank = createFuelTank().setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
             if (isRemote()) return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                 var list = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
@@ -70,7 +71,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableFluidTank createFuelTank(Object... args) {
+    protected NotifiableFluidTank createFuelTank() {
         return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
@@ -93,7 +94,8 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     protected void randomDisplayTick(RandomSource random, float x, float y, float z) {
         super.randomDisplayTick(random, x, y, z);
         if (random.nextFloat() < 0.3F) {
-            getLevel().addParticle(ParticleTypes.LAVA, x + random.nextFloat(), y, z + random.nextFloat(), 0.0F, 0.0F,
+            Objects.requireNonNull(getLevel()).addParticle(ParticleTypes.LAVA, x + random.nextFloat(), y,
+                    z + random.nextFloat(), 0.0F, 0.0F,
                     0.0F);
         }
     }

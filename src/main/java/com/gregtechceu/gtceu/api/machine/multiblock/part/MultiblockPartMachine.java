@@ -10,10 +10,8 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -35,11 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockPartMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @DescSynced
-    @UpdateListener(methodName = "onControllersUpdated")
+    @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
 
@@ -54,11 +48,6 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     //////////////////////////////////////
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public boolean hasController(BlockPos controllerPos) {
         return controllerPositions.contains(controllerPos);
     }
@@ -70,11 +59,11 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     // Not sure if necessary, but added to match the Controller class
     @SuppressWarnings("unused")
-    public void onControllersUpdated(Set<BlockPos> newPositions, Set<BlockPos> old) {
+    @ClientFieldChangeListener(fieldName = "controllerPositions")
+    public void onControllersUpdated() {
         controllers.clear();
-        for (BlockPos blockPos : newPositions) {
-            if (MetaMachine.getMachine(Objects.requireNonNull(getLevel()),
-                    blockPos) instanceof IMultiController controller) {
+        for (BlockPos blockPos : controllerPositions) {
+            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
                 controllers.add(controller);
             }
         }
@@ -85,7 +74,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     public SortedSet<IMultiController> getControllers() {
         // Necessary to rebuild the set of controllers on client-side
         if (controllers.size() != controllerPositions.size()) {
-            onControllersUpdated(controllerPositions, Collections.emptySet());
+            onControllersUpdated();
         }
         return Collections.unmodifiableSortedSet(controllers);
     }
@@ -147,6 +136,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
             }
         }
+        if (!isRemote()) getSyncDataHolder().markClientSyncFieldDirty("controllerPositions");
     }
 
     @MustBeInvokedByOverriders
@@ -155,6 +145,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         controllerPositions.add(controller.self().getPos());
         controllers.add(controller);
 
+        if (!isRemote()) getSyncDataHolder().markClientSyncFieldDirty("controllerPositions");
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));

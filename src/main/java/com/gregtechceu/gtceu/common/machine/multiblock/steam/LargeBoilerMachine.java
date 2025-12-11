@@ -17,13 +17,12 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -39,7 +38,6 @@ import net.minecraft.world.level.material.Fluids;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,13 +46,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeBoilerMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
     @Getter
     public final int maxTemperature, heatSpeed;
-    @Persisted
+    @SaveField
     @Getter
     private int currentTemperature, throttle;
     @Nullable
@@ -68,10 +64,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         this.throttle = 100;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
+    //////////////////////////////////////
+    // ****** Recipe Logic ******//
+    //////////////////////////////////////
 
     @Override
     public LargeBoilerMachine.LargeBoilerRecipeLogic getRecipeLogic() {
@@ -244,8 +239,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
 
-        @Persisted
-        @DescSynced
+        @SaveField
+        @SyncToClient
         @Getter
         int currentThrottle;
 

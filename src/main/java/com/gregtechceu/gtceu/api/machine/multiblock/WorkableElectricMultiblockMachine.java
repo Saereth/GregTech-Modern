@@ -19,12 +19,11 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -45,13 +44,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine,
                                                IDisplayUIMachine, ITieredMachine, IOverclockMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WorkableElectricMultiblockMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     // runtime
     protected EnergyContainerList energyContainer;
     @Getter
     protected int tier;
-    @Persisted
+    @SaveField
     @Getter
     protected boolean batchEnabled;
 
@@ -62,11 +59,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////

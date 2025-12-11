@@ -17,11 +17,9 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -48,21 +46,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class WorkableMultiblockMachine extends MultiblockControllerMachine
                                                 implements IWorkableMultiController, IMufflableMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WorkableMultiblockMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
     @Nullable
     @Getter
     @Setter
     private ICleanroomProvider cleanroom;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public final RecipeLogic recipeLogic;
     @Getter
     private final GTRecipeType[] recipeTypes;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     private int activeRecipeType;
     @Getter
     protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
@@ -70,9 +66,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     protected final List<ISubscription> traitSubscriptions;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
     @Nullable
@@ -80,8 +75,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected LongSet activeBlocks;
 
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected VoidingMode voidingMode = VoidingMode.VOID_NONE;
 
     public WorkableMultiblockMachine(IMachineBlockEntity holder,
@@ -99,14 +94,14 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this(holder, RecipeLogic::new);
     }
 
+    public void setMuffled(boolean muffled) {
+        isMuffled = muffled;
+        if (!isRemote()) getSyncDataHolder().markClientSyncFieldDirty("isMuffled");
+    }
+
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onUnload() {

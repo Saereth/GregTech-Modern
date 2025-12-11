@@ -17,9 +17,8 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -167,8 +166,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     public static class DistillationTowerLogic extends RecipeLogic {
 
         @Nullable
-        @Persisted
-        @DescSynced
+        @SaveField
+        @SyncToClient
         GTRecipe workingRecipe = null;
 
         public DistillationTowerLogic(IRecipeLogicMachine machine) {
@@ -225,6 +224,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         private void updateWorkingRecipe(GTRecipe recipe) {
             if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES) {
                 this.workingRecipe = recipe;
+                if (!getMachine().isRemote()) syncDataHolder.markClientSyncFieldDirty("workingRecipe");
                 return;
             }
 
@@ -236,6 +236,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 if (!(outputs.get(i) instanceof VoidFluidHandler)) trimmed.add(contents.get(i));
             }
             this.workingRecipe.outputs.put(FluidRecipeCapability.CAP, trimmed);
+            if (!getMachine().isRemote()) syncDataHolder.markClientSyncFieldDirty("workingRecipe");
         }
 
         @Override
